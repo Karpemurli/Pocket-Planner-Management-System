@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Pocket Planner - Profile Management">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png" />
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png" />
+
+  <title>Pocket Planner - Profile</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+
+  <!-- Libraries -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <!-- Main CSS -->
+  <link href="../assets/css/argon-dashboard-tailwind.css?v=1.0.1" rel="stylesheet" />
+
+
+
+  <style>
+    /* Profile Page Specific Styles */
+    .profile-page {
+      --primary-color: #3b82f6;
+      --hover-transition: all 0.3s ease;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .profile-stats-card {
+      transition: transform 0.3s ease;
+    }
+
+    .profile-stats-card:hover {
+      transform: translateY(-5px);
+    }
+
+    #profileImage {
+      border: 3px solid var(--primary-color);
+      object-fit: cover;
+    }
+
+    .status-badge {
+      transition: var(--hover-transition);
+    }
+
+    .status-badge:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .form-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    /* OTP Section */
+    #otpSection {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    #otpTimer {
+      font-weight: bold;
+      color: var(--primary-color);
+    }
+
+    #resendOtp {
+      cursor: pointer;
+      transition: var(--hover-transition);
+    }
+
+    #resendOtp:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+      .profile-form-section {
+        margin-top: 1.5rem;
+      }
+    }
+
+
+  </style>
+</head>
+
+<body
+  class="m-0 font-sans antialiased font-normal dark:bg-slate-900 text-base leading-default bg-gray-50 text-slate-500">
+  <!-- Background Header -->
+  <div
+    class="absolute bg-y-50 w-full top-0 bg-[url('https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-pro/assets/img/profile-layout-header.jpg')] min-h-75">
+    <span class="absolute top-0 left-0 w-full h-full bg-blue-500 opacity-60"></span>
+  </div>
+
+  <!-- Sidebar Navigation -->
+  <aside
+    class="fixed inset-y-0 flex-wrap items-center justify-between block w-full p-0 my-4 overflow-y-auto antialiased transition-transform duration-200 -translate-x-full bg-white border-0 shadow-xl dark:shadow-none dark:bg-slate-850 max-w-64 ease-nav-brand z-990 xl:ml-6 rounded-2xl xl:left-0 xl:translate-x-0">
+    <div class="h-19">
+      <i class="absolute top-0 right-0 p-4 opacity-50 cursor-pointer fas fa-times dark:text-white text-slate-400 xl:hidden"
+        sidenav-close></i>
+      <a class="block px-8 py-6 m-0 text-sm whitespace-nowrap dark:text-white text-slate-700" href="#" target="_blank">
+        <img src="../assets/img/logo-ct-dark.png"
+          class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8"
+          alt="Pocket Planner Logo" />
+        <img src="../assets/img/logo-ct.png"
+          class="hidden h-full max-w-full transition-all duration-200 dark:inline ease-nav-brand max-h-8"
+          alt="Pocket Planner Logo" />
+        <span class="ml-1 font-semibold transition-all duration-200 ease-nav-brand">Pocket Planner</span>
+      </a>
+    </div>
+
+    <hr
+      class="h-px mt-0 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
+
+    <div class="items-center block w-auto max-h-screen overflow-auto h-sidenav grow basis-full">
+      <ul class="flex flex-col pl-0 mb-0">
+        <!-- Dashboard Link -->
+        <li class="mt-0.5 w-full">
+          <a class="py-2.7 bg-blue-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors"
+            href="../pages/dashboard.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-tv-2"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Dashboard</span>
+          </a>
+        </li>
+
+        <!-- Monthly Salary Link -->
+        <li class="mt-0.5 w-full">
+          <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+            href="../pages/salary.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center fill-current stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-emerald-500 ni ni-credit-card"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Monthly Salary</span>
+          </a>
+        </li>
+
+        <!-- Expense Entry Link -->
+        <li class="mt-0.5 w-full">
+          <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+            href="../pages/expense_entry.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center fill-current stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-emerald-500 ni ni-credit-card"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Expense Entry</span>
+          </a>
+        </li>
+
+        <!-- Monthly Report Link -->
+        <li class="mt-0.5 w-full">
+          <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+            href="../pages/monthly_report.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Monthly Report</span>
+          </a>
+        </li>
+
+        <!-- Account Section Header -->
+        <li class="w-full mt-4">
+          <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase dark:text-white opacity-60">Account pages</h6>
+        </li>
+
+        <!-- Profile Link (Active) -->
+        <li class="mt-0.5 w-full">
+          <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+            href="../pages/profile.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-slate-700 ni ni-single-02"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Profile</span>
+          </a>
+        </li>
+
+        <!-- Sign In Link -->
+        <li class="mt-0.5 w-full">
+          <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+            href="../pages/index.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-single-copy-04"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sign In</span>
+          </a>
+        </li>
+
+        <!-- Sign Up Link -->
+        <li class="mt-0.5 w-full">
+          <a class="dark:text-white dark:opacity-80 py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors"
+            href="../pages/sign-up.html">
+            <div
+              class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+              <i class="relative top-0 text-sm leading-normal text-cyan-500 ni ni-collection"></i>
+            </div>
+            <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Sign Up</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68">
+    <!-- Navbar -->
+    <nav
+      class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start"
+      navbar-main navbar-scroll="false">
+      <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
+        <!-- Breadcrumbs -->
+        <nav>
+          <ol class="flex flex-wrap pt-1 mr-12 bg-transparent rounded-lg sm:mr-16">
+            <li class="text-sm leading-normal">
+              <a class="text-white opacity-50" href="javascript:;">Pages</a>
+            </li>
+            <li
+              class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']"
+              aria-current="page">
+              Profile
+            </li>
+          </ol>
+          <h6 class="mb-0 font-bold text-white capitalize">Profile Settings</h6>
+        </nav>
+
+        <!-- Top Navigation -->
+        <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+          <!-- Search Bar -->
+          <div class="flex items-center md:ml-auto md:pr-4">
+            <div class="relative flex flex-wrap items-stretch w-full transition-all rounded-lg ease">
+              <span
+                class="text-sm ease leading-5.6 absolute z-50 -ml-px flex h-full items-center whitespace-nowrap rounded-lg rounded-tr-none rounded-br-none border border-r-0 border-transparent bg-transparent py-2 px-2.5 text-center font-normal text-slate-500 transition-all">
+                <i class="fas fa-search"></i>
+              </span>
+              <input type="text" id="searchInput"
+                class="pl-9 text-sm focus:shadow-primary-outline ease w-full leading-5.6 relative -ml-px block min-w-0 flex-auto rounded-lg border border-solid border-gray-300 dark:bg-slate-850 dark:text-white bg-white bg-clip-padding py-2 pr-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none focus:transition-shadow"
+                placeholder="Search transactions..." />
+            </div>
+          </div>
+
+          <!-- User Menu -->
+          <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
+            <li class="flex items-center">
+              <a href="#" id="user-nav"
+                class="block px-0 py-2 text-sm font-semibold text-white transition-all ease-nav-brand focus:outline-none">
+                <i class="fa fa-user sm:mr-1"></i>
+                <span class="hidden sm:inline">Logout</span>
+              </a>
+            </li>
+
+            <!-- Mobile Menu Toggle -->
+            <li class="flex items-center pl-4 xl:hidden">
+              <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" sidenav-trigger>
+                <div class="w-4.5 overflow-hidden">
+                  <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
+                  <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
+                  <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i>
+                </div>
+              </a>
+            </li>
+
+            <!-- Settings -->
+            <li class="flex items-center px-4">
+              <a href="javascript:;" class="p-0 text-sm text-white transition-all ease-nav-brand">
+                <i fixed-plugin-button-nav class="cursor-pointer fa fa-cog"></i>
+              </a>
+            </li>
+
+            <!-- Notifications Dropdown -->
+            <li class="relative flex items-center pr-2">
+              <p class="hidden transform-dropdown-show"></p>
+              <a href="javascript:;" class="block p-0 text-sm text-white transition-all ease-nav-brand" dropdown-trigger
+                aria-expanded="false">
+                <i class="cursor-pointer fa fa-bell"></i>
+                <span
+                  class="absolute top-0 right-0 inline-block w-2 h-2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"></span>
+              </a>
+
+              <ul dropdown-menu
+                class="text-sm transform-dropdown before:font-awesome before:leading-default before:duration-350 before:ease lg:shadow-3xl duration-250 min-w-44 before:sm:right-8 before:text-5.5 pointer-events-none absolute right-0 top-0 z-50 origin-top list-none rounded-lg border-0 border-solid border-transparent dark:shadow-dark-xl dark:bg-slate-850 bg-white bg-clip-padding px-2 py-4 text-left text-slate-500 opacity-0 transition-all before:absolute before:right-2 before:left-auto before:top-0 before:z-50 before:inline-block before:font-normal before:text-white before:antialiased before:transition-all before:content-['\f0d8'] sm:-mr-6 lg:absolute lg:right-0 lg:left-auto lg:mt-2 lg:block lg:cursor-pointer">
+                <!-- User Welcome -->
+                <li class="relative mb-2">
+                  <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg bg-transparent px-4 duration-300 hover:bg-gray-200 hover:text-slate-700 lg:transition-colors"
+                    href="javascript:;">
+                    <div class="flex py-1">
+                      <div class="my-auto">
+                        <div
+                          class="inline-flex items-center justify-center mr-4 text-sm text-white h-9 w-9 max-w-none rounded-xl bg-gradient-to-tl from-blue-500 to-violet-500">
+                          <i class="fas fa-user text-lg"></i>
+                        </div>
+                      </div>
+                      <div class="flex flex-col justify-center">
+                        <h6 class="mb-1 text-sm font-normal leading-normal dark:text-white">
+                          <span class="font-semibold">Welcome,</span>
+                          <span id="logged-in-username" class="ml-1">User</span>
+                        </h6>
+                        <p class="mb-0 text-xs leading-tight text-slate-400 dark:text-white/80">
+                          <i class="fas fa-user-circle mr-1"></i>
+                          <span id="logged-in-email">user@example.com</span>
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+
+                <!-- Recent Activity -->
+                <li class="relative mb-2">
+                  <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg bg-transparent px-4 duration-300 hover:bg-gray-200 hover:text-slate-700 lg:transition-colors"
+                    href="javascript:;">
+                    <div class="flex py-1">
+                      <div class="my-auto">
+                        <img src="../assets/img/logo-ct-dark.png"
+                          class="inline-flex items-center justify-center mr-4 text-sm text-white h-9 w-9 max-w-none rounded-xl"
+                          alt="Activity" />
+                      </div>
+                      <div class="flex flex-col justify-center">
+                        <h6 class="mb-1 text-sm font-normal leading-normal dark:text-white">
+                          <span class="font-semibold" id="logged-in-username">User</span>
+                        </h6>
+                        <p class="mb-0 text-xs leading-tight text-slate-400 dark:text-white/80">
+                          <i class="mr-1 fa fa-clock"></i>
+                          Just now
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+
+                <!-- Monthly Report Link -->
+                <li class="relative">
+                  <a class="dark:hover:bg-slate-900 ease py-1.2 clear-both block w-full whitespace-nowrap rounded-lg bg-transparent px-4 duration-300 hover:bg-gray-200 hover:text-slate-700 lg:transition-colors"
+                    href="../pages/monthly_report.html">
+                    <div class="flex py-1">
+                      <div class="my-auto">
+                        <div
+                          class="inline-flex items-center justify-center mr-4 text-sm text-white h-9 w-9 max-w-none rounded-xl bg-gradient-to-tl from-emerald-500 to-teal-400">
+                          <i class="fas fa-chart-pie text-lg"></i>
+                        </div>
+                      </div>
+                      <div class="flex flex-col justify-center">
+                        <h6 class="mb-1 text-sm font-normal leading-normal dark:text-white">
+                          <span class="font-semibold">View</span> Monthly Report
+                        </h6>
+                        <p class="mb-0 text-xs leading-tight text-slate-400 dark:text-white/80">
+                          <i class="mr-1 fa fa-clock"></i>
+                          Updated today
+                        </p>
+                      </div>
+                    </div>
+                  </a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Profile Content -->
+    <div class="relative w-full mx-auto mt-60"></div>
+
+    <div class="w-full p-6 mx-auto">
+      <div class="flex flex-wrap -mx-3">
+        <!-- Profile Section -->
+        <div class="w-full max-w-full px-3 shrink-0 md:w-8/12 md:flex-0">
+          <div
+            class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+            <div class="border-black/12.5 rounded-t-2xl border-b-0 border-solid p-6 pb-0">
+              <div class="flex items-center">
+                <h1 class="mb-0 text-xl font-bold dark:text-white/80">My Profile</h1>
+                <button type="button" id="saveChangesBtn"
+                  class="inline-block px-8 py-2 mb-4 ml-auto font-bold leading-normal text-center text-white align-middle transition-all ease-in bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer text-xs tracking-tight-rem hover:shadow-xs hover:-translate-y-px active:opacity-85">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+
+            <div class="flex-auto p-6">
+              <div class="flex flex-wrap -mx-3">
+                <!-- Profile Picture Section -->
+                <div class="w-full max-w-full px-3 shrink-0 md:w-4/12 md:flex-0">
+                  <!-- <div class="relative">
+                    <img id="profileImage" src="../assets/img/default-profile.jpg" alt="Profile Picture" class="w-32 h-32 mx-auto rounded-full shadow-lg">
+                    <button class="absolute bottom-0 right-0 flex items-center justify-center w-8 h-8 bg-blue-500 rounded-full hover:bg-blue-600">
+                      <i class="text-white fas fa-camera"></i>
+                    </button>
+                  </div> -->
+
+                  <div class="mt-6 text-center">
+                    <h2 id="displayUsername" class="text-xl font-bold dark:text-white">John Doe</h2>
+                    <p id="displayEmail" class="text-sm text-slate-500 dark:text-slate-300">john@example.com</p>
+                    <div class="mt-4">
+                      <span
+                        class="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-200 status-badge">
+                        <i class="mr-1 fas fa-user-shield"></i> Premium Member
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Profile Form Section -->
+                <div class="w-full max-w-full px-3 mt-6 shrink-0 md:w-8/12 md:mt-0 md:flex-0 profile-form-section">
+                  <form id="profileForm">
+                    <div class="mb-4">
+                      <label for="username"
+                        class="block mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</label>
+                      <input type="text" id="username" name="username"
+                        class="w-full px-3 py-2 text-sm leading-tight text-slate-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-slate-800 dark:border-slate-600 dark:text-white form-input"
+                        placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="mb-4">
+                      <label for="email" class="block mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">Email
+                        Address</label>
+                      <input type="email" id="email" name="email"
+                        class="w-full px-3 py-2 text-sm leading-tight text-slate-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-slate-800 dark:border-slate-600 dark:text-white form-input"
+                        placeholder="Enter your email" required>
+                    </div>
+
+                   
+
+                    <div class="mb-4">
+                      <div class="mb-4 hidden" id="newPasswordSection">
+                        <label for="newPassword"
+                          class="block mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">New Password</label>
+                        <input type="password" id="newPassword"
+                          class="w-full px-3 py-2 text-sm leading-tight text-slate-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-slate-800 dark:border-slate-600 dark:text-white form-input"
+                          placeholder="Enter new password">
+                        <label for="confirmPassword"
+                          class="block mt-2 mb-2 text-sm font-medium text-slate-700 dark:text-slate-300">Confirm
+                          Password</label>
+                        <input type="password" id="confirmPassword"
+                          class="w-full px-3 py-2 text-sm leading-tight text-slate-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-slate-800 dark:border-slate-600 dark:text-white form-input"
+                          placeholder="Confirm new password">
+                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Password must be at least 8
+                          characters long</p>
+                      </div>
+                      <button type="button" id="changePasswordBtn"
+                        class="mb-4 text-blue-500 hover:text-blue-700 text-sm">
+                        <i class="fas fa-lock mr-1"></i> Change Password
+                      </button>
+                    </div>
+
+                    <!-- OTP Verification Section -->
+                    <div id="otpSection" class="hidden p-4 mb-4 bg-blue-50 rounded-lg dark:bg-slate-800">
+                      <div class="flex items-center mb-2">
+                        <i class="mr-2 text-blue-500 fas fa-shield-alt"></i>
+                        <span class="text-sm font-medium text-slate-700 dark:text-slate-300">OTP Verification</span>
+                      </div>
+                      <p class="mb-3 text-xs text-slate-600 dark:text-slate-400">
+                        We've sent a verification code to your email. Please enter it below to confirm your changes.
+                      </p>
+                      <div class="flex">
+                        <input type="text" id="otp" name="otp" maxlength="6"
+                          class="w-32 px-3 py-2 mr-2 text-sm leading-tight text-slate-700 border rounded-lg shadow appearance-none focus:outline-none focus:shadow-outline dark:bg-slate-800 dark:border-slate-600 dark:text-white form-input"
+                          placeholder="Enter OTP">
+                        <button type="button" id="verifyBtn"
+                          class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-lg hover:bg-blue-600">
+                          Verify
+                        </button>
+                      </div>
+                      <div class="mt-2 text-xs text-right">
+                        <a href="#" id="resendOtp" class="text-blue-500 hover:text-blue-700 dark:text-blue-400">Resend
+                          OTP</a>
+                        <span id="otpTimer" class="ml-2 text-slate-500 dark:text-slate-400"></span>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Statistics Section -->
+        <div class="w-full max-w-full px-3 mt-6 shrink-0 md:w-4/12 md:flex-0">
+          <div
+            class="relative flex flex-col min-w-0 mt-6 break-words bg-white border-0 shadow-xl dark:bg-slate-850 dark:shadow-dark-xl rounded-2xl bg-clip-border">
+            <div class="p-6 pb-0 mb-0 border-b-0 rounded-t-2xl">
+              <h2 class="mb-0 text-lg font-bold dark:text-white">Your Statistics</h2>
+            </div>
+            <div class="flex-auto p-6">
+              <div class="flex flex-wrap -mx-3">
+                <!-- Yearly Balance Card -->
+                <div class="w-full max-w-full px-3 mb-6 shrink-0 sm:w-1/2 sm:flex-0">
+                  <div class="p-4 bg-slate-50 rounded-lg dark:bg-slate-800 profile-stats-card">
+                    <div class="flex items-center">
+                      <div class="p-2 mr-4 text-white bg-blue-500 rounded-full">
+                        <i class="fas fa-rupee-sign"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-white">Total Yearly Balance</h3>
+                        <p class="text-lg font-bold text-blue-500" id="yearlyBalance">₹0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Yearly Savings Card -->
+                <div class="w-full max-w-full px-3 mb-6 shrink-0 sm:w-1/2 sm:flex-0">
+                  <div class="p-4 bg-slate-50 rounded-lg dark:bg-slate-800 profile-stats-card">
+                    <div class="flex items-center">
+                      <div class="p-2 mr-4 text-white bg-emerald-500 rounded-full">
+                        <i class="fas fa-piggy-bank"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-white">Yearly Savings</h3>
+                        <p class="text-lg font-bold text-emerald-500" id="yearlySavings">₹0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Yearly Expenses Card -->
+                <div class="w-full max-w-full px-3 mb-6 shrink-0 sm:w-1/2 sm:flex-0">
+                  <div class="p-4 bg-slate-50 rounded-lg dark:bg-slate-800 profile-stats-card">
+                    <div class="flex items-center">
+                      <div class="p-2 mr-4 text-white bg-orange-500 rounded-full">
+                        <i class="fas fa-chart-line"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-white">Yearly Expenses</h3>
+                        <p class="text-lg font-bold text-orange-500" id="yearlyExpenses">₹0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Yearly Transactions Card -->
+                <div class="w-full max-w-full px-3 mb-6 shrink-0 sm:w-1/2 sm:flex-0">
+                  <div class="p-4 bg-slate-50 rounded-lg dark:bg-slate-800 profile-stats-card">
+                    <div class="flex items-center">
+                      <div class="p-2 mr-4 text-white bg-purple-500 rounded-full">
+                        <i class="fas fa-calendar-check"></i>
+                      </div>
+                      <div>
+                        <h3 class="text-sm font-bold text-slate-700 dark:text-white">Yearly Transactions</h3>
+                        <p class="text-lg font-bold text-purple-500" id="yearlyTransactions">0</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Additional Account Information -->
+              <div class="p-4 mt-4 bg-slate-50 rounded-lg dark:bg-slate-800">
+                <h3 class="mb-3 text-sm font-bold text-slate-700 dark:text-white">Account Information</h3>
+                <div class="flex items-center mb-2">
+                  <i class="mr-2 text-sm text-slate-500 dark:text-slate-300 fas fa-user-tag"></i>
+                  <span class="text-sm text-slate-600 dark:text-slate-300">Member since: <span id="memberSince">Jan
+                      2023</span></span>
+                </div>
+                <div class="flex items-center mb-2">
+                  <i class="mr-2 text-sm text-slate-500 dark:text-slate-300 fas fa-clock"></i>
+                  <span class="text-sm text-slate-600 dark:text-slate-300">Last updated: <span
+                      id="lastUpdated">Today</span></span>
+                </div>
+                <div class="flex items-center">
+                  <i class="mr-2 text-sm text-slate-500 dark:text-slate-300 fas fa-shield-alt"></i>
+                  <span class="text-sm text-slate-600 dark:text-slate-300">Account status: <span
+                      class="text-emerald-500">Active</span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+  
+<footer class="pt-4">
+        <div class="w-full px-6 mx-auto">
+          <div class="flex flex-wrap items-center -mx-3 lg:justify-between">
+            <div class="w-full max-w-full px-3 mt-0 mb-6 shrink-0 lg:mb-0 lg:w-1/2 lg:flex-none">
+              <div class="leading-normal text-center text-sm text-slate-500 lg:text-left">
+                ©
+                <script>
+                  document.write(new Date().getFullYear() + ",");
+                </script>
+                made with <i class="fa fa-heart"></i> by
+                <span class="font-semibold dark:text-white text-slate-700">Swapnil Karpe</span>
+                for a better web.
+              </div>
+            </div>
+            <div class="w-full max-w-full px-3 mt-0 shrink-0 lg:w-1/2 lg:flex-none">
+              <ul class="flex flex-wrap justify-center pl-0 mb-0 list-none lg:justify-end">
+                <li class="nav-item">
+                  <a href="#"
+                    class="block px-4 pt-0 pb-1 font-normal transition-colors ease-in-out text-sm text-slate-500"
+                    target="_blank">Home</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#"
+                    class="block px-4 pt-0 pb-1 font-normal transition-colors ease-in-out text-sm text-slate-500"
+                    target="_blank">About Me</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#"
+                    class="block px-4 pt-0 pb-1 font-normal transition-colors ease-in-out text-sm text-slate-500"
+                    target="_blank">Projects</a>
+                </li>
+                <li class="nav-item">
+                  <a href="#"
+                    class="block px-4 pt-0 pb-1 pr-0 font-normal transition-colors ease-in-out text-sm text-slate-500"
+                    target="_blank">Contact</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </footer>
+  </main>
+
+  <!-- Settings Panel -->
+  <div fixed-plugin>
+    <a fixed-plugin-button
+      class="fixed px-4 py-2 bg-white shadow-lg cursor-pointer bottom-8 right-8 text-xl z-990 rounded-circle text-slate-700">
+      <i class="py-2 pointer-events-none fa fa-cog"></i>
+    </a>
+
+    <div fixed-plugin-card
+      class="z-sticky backdrop-blur-2xl backdrop-saturate-200 dark:bg-slate-850/80 shadow-3xl w-90 ease -right-90 fixed top-0 left-auto flex h-full min-w-0 flex-col break-words rounded-none border-0 bg-white/80 bg-clip-border px-2.5 duration-200">
+      <div class="px-6 pt-4 pb-0 mb-0 border-b-0 rounded-t-2xl">
+        <div class="float-left">
+          <h5 class="mt-4 mb-0 dark:text-white">Argon Configurator</h5>
+          <p class="dark:text-white dark:opacity-80">See our dashboard options.</p>
+        </div>
+        <div class="float-right mt-6">
+          <button fixed-plugin-close-button
+            class="inline-block p-0 mb-4 font-bold leading-normal text-center uppercase align-middle transition-all ease-in bg-transparent border-0 rounded-lg shadow-none cursor-pointer hover:-translate-y-px text-sm tracking-tight-rem bg-150 bg-x-25 active:opacity-85 dark:text-white text-slate-700">
+            <i class="fa fa-close"></i>
+          </button>
+        </div>
+      </div>
+
+      <hr
+        class="h-px mx-0 my-1 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
+
+      <div class="flex-auto p-6 pt-0 overflow-auto sm:pt-4">
+        <!-- Sidebar Colors -->
+        <div>
+          <h6 class="mb-0 dark:text-white">Sidebar Colors</h6>
+        </div>
+        <a href="javascript:void(0)">
+          <div class="my-2 text-left" sidenav-colors>
+            <span
+              class="py-2.2 text-xs rounded-circle h-5.6 mr-1.25 w-5.6 ease-in-out bg-gradient-to-tl from-blue-500 to-violet-500 relative inline-block cursor-pointer whitespace-nowrap border border-solid border-slate-700 text-center align-baseline font-bold uppercase leading-none text-white transition-all duration-200 hover:border-slate-700"
+              active-color data-color="blue" onclick="sidebarColor(this)"></span>
+            <span
+              class="py-2.2 text-xs rounded-circle h-5.6 mr-1.25 w-5.6 ease-in-out bg-gradient-to-tl from-zinc-800 to-zinc-700 dark:bg-gradient-to-tl dark:from-slate-750 dark:to-gray-850 relative inline-block cursor-pointer whitespace-nowrap border border-solid border-white text-center align-baseline font-bold uppercase leading-none text-white transition-all duration-200 hover:border-slate-700"
+              data-color="gray" onclick="sidebarColor(this)"></span>
+            <span
+              class="py-2.2 text-xs rounded-circle h-5.6 mr-1.25 w-5.6 ease-in-out bg-gradient-to-tl from-blue-700 to-cyan-500 relative inline-block cursor-pointer whitespace-nowrap border border-solid border-white text-center align-baseline font-bold uppercase leading-none text-white transition-all duration-200 hover:border-slate-700"
+              data-color="cyan" onclick="sidebarColor(this)"></span>
+            <span
+              class="py-2.2 text-xs rounded-circle h-5.6 mr-1.25 w-5.6 ease-in-out bg-gradient-to-tl from-emerald-500 to-teal-400 relative inline-block cursor-pointer whitespace-nowrap border border-solid border-white text-center align-baseline font-bold uppercase leading-none text-white transition-all duration-200 hover:border-slate-700"
+              data-color="emerald" onclick="sidebarColor(this)"></span>
+            <span
+              class="py-2.2 text-xs rounded-circle h-5.6 mr-1.25 w-5.6 ease-in-out bg-gradient-to-tl from-orange-500 to-yellow-500 relative inline-block cursor-pointer whitespace-nowrap border border-solid border-white text-center align-baseline font-bold uppercase leading-none text-white transition-all duration-200 hover:border-slate-700"
+              data-color="orange" onclick="sidebarColor(this)"></span>
+            <span
+              class="py-2.2 text-xs rounded-circle h-5.6 mr-1.25 w-5.6 ease-in-out bg-gradient-to-tl from-red-600 to-orange-600 relative inline-block cursor-pointer whitespace-nowrap border border-solid border-white text-center align-baseline font-bold uppercase leading-none text-white transition-all duration-200 hover:border-slate-700"
+              data-color="red" onclick="sidebarColor(this)"></span>
+          </div>
+        </a>
+
+        <!-- Sidenav Type -->
+        <div class="mt-4">
+          <h6 class="mb-0 dark:text-white">Sidenav Type</h6>
+          <p class="leading-normal dark:text-white dark:opacity-80 text-sm">Choose between 2 different sidenav types.
+          </p>
+        </div>
+        <div class="flex">
+          <button transparent-style-btn
+            class="inline-block w-full px-4 py-2.5 mb-2 font-bold leading-normal text-center text-white capitalize align-middle transition-all bg-blue-500 border border-transparent border-solid rounded-lg cursor-pointer text-sm xl-max:cursor-not-allowed xl-max:opacity-65 xl-max:pointer-events-none xl-max:bg-gradient-to-tl xl-max:from-blue-500 xl-max:to-violet-500 xl-max:text-white xl-max:border-0 hover:-translate-y-px dark:cursor-not-allowed dark:opacity-65 dark:pointer-events-none dark:bg-gradient-to-tl dark:from-blue-500 dark:to-violet-500 dark:text-white dark:border-0 hover:shadow-xs active:opacity-85 ease-in tracking-tight-rem shadow-md bg-150 bg-x-25 bg-gradient-to-tl from-blue-500 to-violet-500 hover:border-blue-500"
+            data-class="bg-transparent" active-style>White</button>
+          <button white-style-btn
+            class="inline-block w-full px-4 py-2.5 mb-2 ml-2 font-bold leading-normal text-center text-blue-500 capitalize align-middle transition-all bg-transparent border border-blue-500 border-solid rounded-lg cursor-pointer text-sm xl-max:cursor-not-allowed xl-max:opacity-65 xl-max:pointer-events-none xl-max:bg-gradient-to-tl xl-max:from-blue-500 xl-max:to-violet-500 xl-max:text-white xl-max:border-0 hover:-translate-y-px dark:cursor-not-allowed dark:opacity-65 dark:pointer-events-none dark:bg-gradient-to-tl dark:from-blue-500 dark:to-violet-500 dark:text-white dark:border-0 hover:shadow-xs active:opacity-85 ease-in tracking-tight-rem shadow-md bg-150 bg-x-25 bg-none hover:border-blue-500"
+            data-class="bg-white">Dark</button>
+        </div>
+        <p class="block mt-2 leading-normal dark:text-white dark:opacity-80 text-sm xl:hidden">You can change the
+          sidenav type just on desktop view.</p>
+
+        <!-- Navbar Fixed Toggle -->
+        <div class="flex my-4">
+          <h6 class="mb-0 dark:text-white">Navbar Fixed</h6>
+          <div class="block pl-0 ml-auto min-h-6">
+            <input navbarFixed
+              class="rounded-10 duration-250 ease-in-out after:rounded-circle after:shadow-2xl after:duration-250 checked:after:translate-x-5.3 h-5 relative float-left mt-1 ml-auto w-10 cursor-pointer appearance-none border border-solid border-gray-200 bg-slate-800/10 bg-none bg-contain bg-left bg-no-repeat align-top transition-all after:absolute after:top-px after:h-4 after:w-4 after:translate-x-px after:bg-white after:content-[''] checked:border-blue-500/95 checked:bg-blue-500/95 checked:bg-none checked:bg-right"
+              type="checkbox" />
+          </div>
+        </div>
+
+        <hr
+          class="h-px my-6 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent " />
+
+        <!-- Dark Mode Toggle -->
+        <div class="flex mt-2 mb-12">
+          <h6 class="mb-0 dark:text-white">Light / Dark</h6>
+          <div class="block pl-0 ml-auto min-h-6">
+            <input dark-toggle
+              class="rounded-10 duration-250 ease-in-out after:rounded-circle after:shadow-2xl after:duration-250 checked:after:translate-x-5.3 h-5 relative float-left mt-1 ml-auto w-10 cursor-pointer appearance-none border border-solid border-gray-200 bg-slate-800/10 bg-none bg-contain bg-left bg-no-repeat align-top transition-all after:absolute after:top-px after:h-4 after:w-4 after:translate-x-px after:bg-white after:content-[''] checked:border-blue-500/95 checked:bg-blue-500/95 checked:bg-none checked:bg-right"
+              type="checkbox" />
+          </div>
+        </div>
+
+        <!-- Social Sharing -->
+        <div class="w-full text-center">
+          <h6 class="mt-4 dark:text-white">Thank you for sharing!</h6>
+          <a href="https://twitter.com/intent/tweet?text=Check%20Argon%20Dashboard%20made%20by%20%40CreativeTim%20%23webdesign%20%23dashboard%20%23tailwindcss&amp;url=https%3A%2F%2Fwww.creative-tim.com%2Fproduct%2Fargon-dashboard-tailwind"
+            class="inline-block px-5 py-2.5 mb-0 mr-2 font-bold text-center text-white align-middle transition-all border-0 rounded-lg cursor-pointer hover:shadow-xs hover:-translate-y-px active:opacity-85 leading-normal text-sm ease-in tracking-tight-rem shadow-md bg-150 bg-x-25 me-2 border-slate-700 bg-slate-700"
+            target="_blank">
+            <i class="mr-1 fab fa-twitter"></i> Tweet
+          </a>
+          <a href="https://www.facebook.com/sharer/sharer.php?u=https://www.creative-tim.com/product/argon-dashboard-tailwind"
+            class="inline-block px-5 py-2.5 mb-0 mr-2 font-bold text-center text-white align-middle transition-all border-0 rounded-lg cursor-pointer hover:shadow-xs hover:-translate-y-px active:opacity-85 leading-normal text-sm ease-in tracking-tight-rem shadow-md bg-150 bg-x-25 me-2 border-slate-700 bg-slate-700"
+            target="_blank">
+            <i class="mr-1 fab fa-facebook-square"></i> Share
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Files -->
+  <script src="../js/dashboard.js" defer></script>
+  <script src="../js/logout.js" defer></script>
+  <script src="../js/profile.js" defer></script>
+  <script src="../js/userInfo.js" defer></script>
+  <script src="../js/search.js" defer></script>
+
+  <!-- Plugins -->
+  <script src="../assets/js/plugins/perfect-scrollbar.min.js" async></script>
+
+  <!-- Main Script -->
+  <script src="../assets/js/argon-dashboard-tailwind.js?v=1.0.1" async></script>
+</body>
+
+</html>

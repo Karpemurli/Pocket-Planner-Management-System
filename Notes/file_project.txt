@@ -1,0 +1,18 @@
+
+Pocket Planner Management System
+
+HTML, CSS, Bootstrap and JS
+
+1. Signup
+2. signing --> 2 authentication process --> login --> otp email --> dashboard
+3. dashboard
+    a) title
+    b) amount
+    c) category -->
+    d) date
+    e) description
+Display the data on the same form with option Edit and Delete
+4. Reports
+    From date to End Date
+    From date to End Date Category
+    Charts
