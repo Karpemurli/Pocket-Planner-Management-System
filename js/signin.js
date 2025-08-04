@@ -1,6 +1,4 @@
-
-//siginn.js
-// Authentication Utility Functions
+// ========== Utility for Alerts ==========
 function showError(message) {
   Swal.fire({
     icon: 'error',
@@ -22,108 +20,83 @@ function showSuccess(message) {
 // Environment flag: false in production to hide demo OTP
 const isDevEnvironment = true;
 
+// ========== OTP Generation & Storage ==========
 function sendOTP(email) {
-  // Generate random 6-digit OTP
   const demoOTP = Math.floor(100000 + Math.random() * 900000).toString();
-
   localStorage.setItem(`otp_${email}`, demoOTP);
-  localStorage.setItem(`otp_expiry_${email}`, Date.now() + 300000); // 5 minutes expiry
-
-  console.log(`Demo OTP for ${email}: ${demoOTP}`);
+  localStorage.setItem(`otp_expiry_${email}`, Date.now() + 300000); // 5 minutes
+  console.log(`Demo OTP for ${email}: ${demoOTP}`); // remove in production
   return demoOTP;
 }
 
-// In your signin.js, update the showOtpSection function:
+// ========== Display OTP Section ==========
 function showOtpSection(email, demoOTP) {
   const loginForm = document.getElementById('loginForm');
   if (loginForm) loginForm.style.display = 'none';
 
   const otpSection = document.getElementById('otpSection');
-  if (otpSection) {
-    otpSection.innerHTML = `
-      <div class="otp-card">
-        <h2 class="otp-title">Verify Your Identity</h2>
-        <p class="otp-sent-message">OTP sent to:<br><span class="email-display">${email}</span></p>
+  if (!otpSection) return;
 
-        <div class="otp-input-container">
-          <input type="text" maxlength="1" class="otp-digit" data-index="0" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 1" autofocus>
-          <input type="text" maxlength="1" class="otp-digit" data-index="1" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 2">
-          <input type="text" maxlength="1" class="otp-digit" data-index="2" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 3">
-          <input type="text" maxlength="1" class="otp-digit" data-index="3" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 4">
-          <input type="text" maxlength="1" class="otp-digit" data-index="4" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 5">
-          <input type="text" maxlength="1" class="otp-digit" data-index="5" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 6">
-        </div>
+  otpSection.innerHTML = `
+    <div class="otp-card">
+      <h2 class="otp-title">Verify Your Identity</h2>
+      <p class="otp-sent-message">
+        OTP sent to: <strong class="email-display">${email}</strong>
+      </p>
 
-        <div class="otp-info-container">
-          <p class="otp-demo-text" ${!isDevEnvironment ? 'style="display:none;"' : ''}>Demo OTP: <span class="demo-otp">${demoOTP}</span></p>
-          <p class="otp-timer" id="otpTimer">05:00</p>
-        </div>
-
-        <div class="otp-action-buttons">
-          <button id="verifyOtpBtn" class="otp-verify-btn" disabled>Verify OTP</button>
-          <button id="cancelOtpBtn" class="otp-cancel-btn">Cancel</button>
-        </div>
-
-        <p class="otp-resend-text">
-          Didn't receive code? <a href="#" id="resendOtpLink" class="otp-resend-link">Resend OTP</a>
-        </p>
+      <div class="otp-single-container" aria-label="OTP input">
+        <input type="text" id="singleOtpInput" maxlength="6" inputmode="numeric" pattern="\\d*"
+          aria-label="Enter 6-digit OTP" placeholder="Enter OTP"
+          class="otp-single-box" autocomplete="one-time-code" />
       </div>
-    `;
-    otpSection.style.display = 'block';
 
-    setupOtpSectionEvents(email);
-    setupOtpInputLogic();
-    monitorOtpInputs();
-    startOtpTimer(email);
-  }
+      <div class="otp-demo-container">
+        <p class="otp-demo-text" ${!isDevEnvironment ? 'style="display:none;"' : ''}>
+          Demo OTP: <span class="demo-otp" id="demoOtp">${demoOTP}</span>
+        </p>
+        <p class="otp-timer" id="otpTimer">05:00</p>
+      </div>
+
+      <div class="otp-button-container">
+        <button id="verifyOtpBtn" type="button" class="otp-verify-btn" disabled>Verify OTP Code</button>
+        <button id="cancelOtpBtn" type="button" class="otp-cancel-btn">Cancel</button>
+      </div>
+
+      <p class="otp-resend-text">
+        Didn't receive code? <span><a href="#" id="resendOtpLink" class="otp-resend-link">Resend OTP</a></span>
+      </p>
+
+      <p id="otpMessage" class="otp-message" aria-live="polite"></p>
+    </div>
+  `;
+
+  otpSection.style.display = 'block';
+
+  monitorSingleOtpInput();
+  setupOtpSectionEvents(email);
+  startOtpTimer(email);
 }
 
-function setupOtpInputLogic() {
-  const otpDigits = document.querySelectorAll('.otp-digit');
-  const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-
-  otpDigits.forEach((digit, index) => {
-    digit.addEventListener('input', (e) => {
-      e.target.value = e.target.value.replace(/[^0-9]/g, '');
-
-      if (e.target.value.length === 1 && index < otpDigits.length - 1) {
-        otpDigits[index + 1].focus();
-      }
-
-      // Auto-submit on last digit
-      const otp = Array.from(otpDigits).map(i => i.value).join('');
-      if (otp.length === 6) {
-        // small delay so user sees last digit
-        setTimeout(() => {
-          if (!verifyOtpBtn.disabled) {
-            verifyOtpBtn.click();
-          }
-        }, 100);
-      }
-    });
-
-    digit.addEventListener('keydown', (e) => {
-      if (e.key === 'Backspace' && e.target.value.length === 0 && index > 0) {
-        otpDigits[index - 1].focus();
-      }
-    });
-  });
-}
-
-function monitorOtpInputs() {
-  const otpDigits = document.querySelectorAll('.otp-digit');
+// ========== Single OTP Input Monitoring ==========
+function monitorSingleOtpInput() {
+  const otpInput = document.getElementById('singleOtpInput');
   const verifyBtn = document.getElementById('verifyOtpBtn');
-  otpDigits.forEach(input => {
-    input.addEventListener('input', () => {
-      const otp = Array.from(otpDigits).map(i => i.value).join('');
-      verifyBtn.disabled = otp.length !== 6;
-    });
+  if (!otpInput || !verifyBtn) return;
+
+  otpInput.addEventListener('input', () => {
+    // Only digits, max 6
+    let val = otpInput.value.replace(/\D/g, '');
+    if (val.length > 6) val = val.slice(0, 6);
+    otpInput.value = val;
+    verifyBtn.disabled = val.length !== 6;
   });
 }
 
+// ========== Timer ==========
 function startOtpTimer(email) {
   let timeLeft = 300;
   const timerElement = document.getElementById('otpTimer');
+  if (!timerElement) return;
 
   if (window.otpTimerInterval) {
     clearInterval(window.otpTimerInterval);
@@ -148,19 +121,20 @@ function startOtpTimer(email) {
   }, 1000);
 }
 
+// ========== OTP Section Events ==========
 function setupOtpSectionEvents(email) {
   const verifyOtpBtn = document.getElementById('verifyOtpBtn');
   if (verifyOtpBtn) {
     verifyOtpBtn.addEventListener('click', function () {
-      const otpDigits = document.querySelectorAll('.otp-digit');
-      const otp = Array.from(otpDigits).map(input => input.value).join('');
+      const otpInput = document.getElementById('singleOtpInput');
+      const otp = otpInput ? otpInput.value.trim() : '';
 
-      if (otp.length !== 6 || !/^\d+$/.test(otp)) {
+      if (otp.length !== 6 || !/^\d{6}$/.test(otp)) {
         showError('Please enter a valid 6-digit OTP');
-        otpDigits.forEach(input => {
-          input.style.borderColor = '#dc3545';
-        });
-        otpDigits[0].focus();
+        if (otpInput) {
+          otpInput.style.borderColor = '#dc3545';
+          otpInput.focus();
+        }
         return;
       }
       verifyOTP(email, otp);
@@ -178,27 +152,40 @@ function setupOtpSectionEvents(email) {
   if (resendOtpLink) {
     resendOtpLink.addEventListener('click', function (e) {
       e.preventDefault();
-      const demoOTP = sendOTP(email);
-      const otpDigits = document.querySelectorAll('.otp-digit');
-      otpDigits.forEach(input => {
-        input.value = '';
-        input.style.borderColor = '';
-      });
-      otpDigits[0].focus();
+      // Rate-limit UI feedback: briefly disable
+      resendOtpLink.setAttribute('aria-disabled', 'true');
+      setTimeout(() => {
+        resendOtpLink.removeAttribute('aria-disabled');
+      }, 3000);
 
-      const demoElem = document.querySelector('.demo-otp-code');
+      const demoOTP = sendOTP(email);
+
+      const otpInput = document.getElementById('singleOtpInput');
+      if (otpInput) {
+        otpInput.value = '';
+        otpInput.style.borderColor = '';
+        otpInput.focus();
+      }
+
+      const demoElem = document.getElementById('demoOtp') || document.querySelector('.demo-otp');
       if (demoElem) demoElem.textContent = demoOTP;
 
       const timerElement = document.getElementById('otpTimer');
-      timerElement.textContent = "05:00";
-      timerElement.style.color = "";
-      startOtpTimer(email);
+      if (timerElement) {
+        timerElement.textContent = "05:00";
+        timerElement.style.color = "";
+      }
+
+      const verifyBtn = document.getElementById('verifyOtpBtn');
+      if (verifyBtn) verifyBtn.disabled = true;
 
       showSuccess(`New OTP sent to ${email}! (Demo: ${demoOTP})`);
+      startOtpTimer(email);
     });
   }
 }
 
+// ========== Hide OTP Section ==========
 function hideOtpSection() {
   const otpSection = document.getElementById('otpSection');
   const loginForm = document.getElementById('loginForm');
@@ -214,11 +201,12 @@ function hideOtpSection() {
   }
 }
 
+// ========== Verify OTP Logic ==========
 function verifyOTP(email, otp) {
   const storedOTP = localStorage.getItem(`otp_${email}`);
   const otpExpiry = localStorage.getItem(`otp_expiry_${email}`);
 
-  if (!storedOTP || !otpExpiry || Date.now() > parseInt(otpExpiry)) {
+  if (!storedOTP || !otpExpiry || Date.now() > parseInt(otpExpiry, 10)) {
     showError("OTP expired or invalid. Please resend.");
     localStorage.removeItem(`otp_${email}`);
     localStorage.removeItem(`otp_expiry_${email}`);
@@ -238,15 +226,15 @@ function verifyOTP(email, otp) {
     if ('vibrate' in navigator) {
       navigator.vibrate(200);
     }
-    const otpDigits = document.querySelectorAll('.otp-digit');
-    otpDigits.forEach(input => {
-      input.style.borderColor = '#dc3545';
-    });
-    otpDigits[0].focus();
+    const otpInput = document.getElementById('singleOtpInput');
+    if (otpInput) {
+      otpInput.style.borderColor = '#dc3545';
+      otpInput.focus();
+    }
   }
 }
 
-// User Authentication Logic
+// ========== User Authentication ==========
 function authenticateUser(email, password) {
   const users = JSON.parse(localStorage.getItem("users") || "[]");
   const user = users.find(u => u.email === email && u.password === password);
@@ -259,42 +247,17 @@ function authenticateUser(email, password) {
 
     const demoOTP = sendOTP(email);
     showOtpSection(email, demoOTP);
-    showSuccess(`OTP sent to ${email}! (Demo: ${demoOTP})`);
+    if (isDevEnvironment) {
+      showSuccess(`OTP sent to ${email}! (Demo: ${demoOTP})`);
+    } else {
+      showSuccess(`OTP sent to ${email}!`);
+    }
   } else {
     showError("Invalid email or password.");
   }
 }
 
-// Event Listeners
-document.addEventListener('DOMContentLoaded', function () {
-  // hide the old subtitle if present (defensive)
-  const subtitle = document.querySelector('h4 + p');
-  if (subtitle && subtitle.textContent.trim().includes('Enter your email and password to sign in')) {
-    subtitle.style.display = 'none';
-  }
-
-  const loginForm = document.getElementById('loginForm');
-
-  if (loginForm) {
-    loginForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
-
-      if (!email || !password) {
-        showError("Please enter both email and password");
-        return;
-      }
-
-      authenticateUser(email, password);
-    });
-  }
-
-  const otpSection = document.getElementById('otpSection');
-  if (otpSection) otpSection.style.display = 'none';
-});
-
-// Helper function to set initial demo user
+// ========== Initial Demo User ==========
 function setInitialDemoUser() {
   const users = JSON.parse(localStorage.getItem("users") || "[]");
   if (users.length === 0) {
@@ -308,4 +271,38 @@ function setInitialDemoUser() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', setInitialDemoUser);
+// ========== DOM Ready ==========
+document.addEventListener('DOMContentLoaded', function () {
+  setInitialDemoUser();
+
+  // hide the old subtitle if present
+  const subtitle = document.querySelector('h4 + p');
+  if (subtitle && subtitle.textContent.trim().includes('Enter your email and password to sign in')) {
+    subtitle.style.display = 'none';
+  }
+
+  const loginForm = document.getElementById('loginForm');
+  if (loginForm) {
+    loginForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
+
+      if (!email || !password) {
+        showError("Please enter both email and password");
+        return;
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        showError("Please enter a valid email address");
+        return;
+      }
+
+      authenticateUser(email, password);
+    });
+  }
+
+  const otpSection = document.getElementById('otpSection');
+  if (otpSection) otpSection.style.display = 'none';
+});
