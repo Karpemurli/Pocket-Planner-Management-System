@@ -23,160 +23,194 @@
   <!-- Main Styling -->
   <link href="../assets/css/argon-dashboard-tailwind.css?v=1.0.1" rel="stylesheet" />
 
+
   <style>
-      .otp-title {
-    text-align: center;
-    color: #2d3748;
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
-  }
-  
-  .otp-card {
-    /* existing styles */
-    max-width: 400px;
-    margin: 0 auto;
-  }
-  
-  /* Add focus styles for better accessibility */
-  .otp-digit:focus-visible {
-    outline: 2px solid #007bff;
-    outline-offset: 2px;
-  }
-  
-  /* Add disabled state for buttons */
-  .otp-verify-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-    #otpSection {
-      max-width: 400px;
-      margin: 20px auto 0;
-      padding: 0 15px;
+    /* Enhanced OTP Section Styles for Mobile */
+    .otp-card {
+      max-width: 100%;
+      width: calc(100% - 32px);
+      margin: 20px auto;
+      padding: 24px 16px;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      font-family: 'Open Sans', sans-serif;
     }
 
-    .otp-card {
-      background: #fff;
-      padding: 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    .otp-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 12px;
+      text-align: center;
     }
 
     .otp-sent-message {
       text-align: center;
+      color: #64748b;
       margin-bottom: 20px;
-      color: #555;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      line-height: 1.4;
     }
 
     .email-display {
-      color: #007bff;
+      color: #3b82f6;
+      font-weight: 600;
       word-break: break-all;
+      display: block;
+      margin-top: 4px;
+      font-size: 0.9rem;
     }
 
     .otp-input-container {
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      gap: 10px;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
     }
 
     .otp-digit {
-      width: 40px;
-      height: 50px;
+      width: 42px;
+      height: 52px;
       text-align: center;
-      font-size: 1.2rem;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      transition: all 0.2s;
+      font-size: 1.4rem;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      caret-color: transparent;
     }
 
     .otp-digit:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
       outline: none;
     }
 
-    .otp-demo-container {
-      text-align: center;
+    .otp-info-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 8px;
       margin-bottom: 20px;
+      border: 1px solid #f1f5f9;
     }
 
     .otp-demo-text {
-      font-size: 0.9rem;
-      color: #666;
-      margin-bottom: 8px;
+      color: #475569;
+      font-size: 0.85rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .demo-otp-code {
-      font-weight: bold;
-      color: #28a745;
+    .demo-otp {
+      font-weight: 700;
+      color: #10b981;
+      background: #ecfdf5;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9rem;
     }
 
     .otp-timer {
-      font-size: 0.85rem;
-      color: #dc3545;
-      font-weight: bold;
+      color: #ef4444;
+      font-weight: 700;
+      font-family: monospace;
+      font-size: 0.9rem;
     }
 
-    .otp-button-container {
+    .otp-action-buttons {
       display: flex;
-      justify-content: center;
-      gap: 15px;
+      flex-direction: column;
+      gap: 12px;
       margin-bottom: 20px;
     }
 
     .otp-verify-btn {
-      background-color: #007bff;
+      width: 100%;
+      padding: 14px;
+      background-color: #3b82f6;
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: 500;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.2s ease;
     }
 
     .otp-verify-btn:hover {
-      background-color: #0069d9;
+      background-color: #2563eb;
     }
 
     .otp-cancel-btn {
-      background-color: #f8f9fa;
-      color: #495057;
-      border: 1px solid #ddd;
-      padding: 10px 20px;
-      border-radius: 6px;
-      font-weight: 500;
+      width: 100%;
+      padding: 14px;
+      background-color: white;
+      color: #475569;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
     }
 
     .otp-cancel-btn:hover {
-      background-color: #e2e6ea;
+      background-color: #f8fafc;
     }
 
     .otp-resend-text {
       text-align: center;
-      font-size: 0.9rem;
-      color: #666;
-      margin-top: 15px;
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-bottom: 16px;
     }
 
     .otp-resend-link {
-      color: #007bff;
+      color: #3b82f6;
+      font-weight: 600;
       text-decoration: none;
-      font-weight: 500;
+      cursor: pointer;
     }
 
     .otp-resend-link:hover {
       text-decoration: underline;
     }
 
-    .otp-message {
+    .signup-link {
       text-align: center;
-      margin-top: 15px;
-      font-weight: 500;
-      min-height: 20px;
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-top: 16px;
+    }
+
+    /* Adjustments for very small screens (below 400px) */
+    @media (max-width: 400px) {
+      .otp-card {
+        padding: 20px 12px;
+        margin: 16px auto;
+        width: calc(100% - 24px);
+      }
+
+      .otp-digit {
+        width: 38px;
+        height: 48px;
+        font-size: 1.3rem;
+      }
+
+      .otp-title {
+        font-size: 1.2rem;
+      }
+
+      .otp-info-container {
+        padding: 10px;
+      }
     }
   </style>
 
@@ -266,16 +300,17 @@
                     </div>
                   </form>
 
+
                   <!-- OTP Verification Section -->
                   <div id="otpSection" style="display: none;">
                     <div class="otp-card">
-                      <p class="otp-sent-message">
-                        OTP sent to: <strong id="emailDisplay" class="email-display"></strong>
+                      <h2 class="otp-title">Verify Your Identity</h2>
+                      <p class="otp-sent-message">OTP sent to: <strong class="email-display" id="emailDisplay"></strong>
                       </p>
 
                       <div class="otp-input-container">
                         <input type="text" maxlength="1" class="otp-digit" data-index="0" inputmode="numeric"
-                          pattern="[0-9]*" autofocus>
+                          pattern="[0-9]*">
                         <input type="text" maxlength="1" class="otp-digit" data-index="1" inputmode="numeric"
                           pattern="[0-9]*">
                         <input type="text" maxlength="1" class="otp-digit" data-index="2" inputmode="numeric"
@@ -288,30 +323,23 @@
                           pattern="[0-9]*">
                       </div>
 
-                      <div class="otp-demo-container">
-                        <p class="otp-demo-text">
-                          Demo OTP: <span class="demo-otp-code" id="demoOtp">123456</span>
-                        </p>
+                      <div class="otp-info-container">
+                        <p class="otp-demo-text">Demo OTP: <span class="demo-otp" id="demoOtp"></span></p>
                         <p class="otp-timer" id="otpTimer">05:00</p>
                       </div>
 
-                      <div class="otp-button-container">
-                        <button id="verifyOtpBtn" class="otp-verify-btn">
-                          Verify OTP
-                        </button>
-                        <button id="cancelOtpBtn" class="otp-cancel-btn">
-                          Cancel
-                        </button>
+                      <div class="otp-action-buttons">
+                        <button id="verifyOtpBtn" class="otp-verify-btn">Verify OTP</button>
+                        <button id="cancelOtpBtn" class="otp-cancel-btn">Cancel</button>
                       </div>
 
                       <p class="otp-resend-text">
                         Didn't receive code? <a href="#" id="resendOtpLink" class="otp-resend-link">Resend OTP</a>
                       </p>
-
-                      <p id="otpMessage" class="otp-message"></p>
                     </div>
                   </div>
-            
+
+
                 </div>
                 <div class="border-black/12.5 rounded-b-2xl border-t-0 border-solid p-6 text-center pt-0 px-1 sm:px-6">
                   <p class="mx-auto mb-6 leading-normal text-sm">
@@ -343,7 +371,7 @@
     </section>
   </main>
 
-  
+
   <footer class="py-12">
     <div class="container">
       <div class="flex flex-wrap -mx-3">

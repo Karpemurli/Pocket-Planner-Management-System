@@ -33,6 +33,7 @@ function sendOTP(email) {
   return demoOTP;
 }
 
+// In your signin.js, update the showOtpSection function:
 function showOtpSection(email, demoOTP) {
   const loginForm = document.getElementById('loginForm');
   if (loginForm) loginForm.style.display = 'none';
@@ -42,9 +43,9 @@ function showOtpSection(email, demoOTP) {
     otpSection.innerHTML = `
       <div class="otp-card">
         <h2 class="otp-title">Verify Your Identity</h2>
-        <p class="otp-sent-message">OTP sent to: <strong class="email-display">${email}</strong></p>
+        <p class="otp-sent-message">OTP sent to:<br><span class="email-display">${email}</span></p>
 
-        <div class="otp-input-container" aria-label="OTP input fields">
+        <div class="otp-input-container">
           <input type="text" maxlength="1" class="otp-digit" data-index="0" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 1" autofocus>
           <input type="text" maxlength="1" class="otp-digit" data-index="1" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 2">
           <input type="text" maxlength="1" class="otp-digit" data-index="2" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 3">
@@ -53,12 +54,12 @@ function showOtpSection(email, demoOTP) {
           <input type="text" maxlength="1" class="otp-digit" data-index="5" inputmode="numeric" pattern="[0-9]*" aria-label="OTP Digit 6">
         </div>
 
-        <div class="otp-demo-container">
-          <p class="otp-demo-text" ${!isDevEnvironment ? 'style="display:none;"' : ''}>Demo OTP: <span class="demo-otp-code">${demoOTP}</span></p>
+        <div class="otp-info-container">
+          <p class="otp-demo-text" ${!isDevEnvironment ? 'style="display:none;"' : ''}>Demo OTP: <span class="demo-otp">${demoOTP}</span></p>
           <p class="otp-timer" id="otpTimer">05:00</p>
         </div>
 
-        <div class="otp-button-container">
+        <div class="otp-action-buttons">
           <button id="verifyOtpBtn" class="otp-verify-btn" disabled>Verify OTP</button>
           <button id="cancelOtpBtn" class="otp-cancel-btn">Cancel</button>
         </div>
@@ -66,8 +67,6 @@ function showOtpSection(email, demoOTP) {
         <p class="otp-resend-text">
           Didn't receive code? <a href="#" id="resendOtpLink" class="otp-resend-link">Resend OTP</a>
         </p>
-
-        <p id="otpMessage" class="otp-message" aria-live="polite"></p>
       </div>
     `;
     otpSection.style.display = 'block';
